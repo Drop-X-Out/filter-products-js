@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Filter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .filters {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .filters h2 {
+            margin-top: 0;
+        }
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .product {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product h3 {
+            margin-top: 0;
+        }
+        .product p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="filters">
+            <h2>Filters</h2>
+            <div class="filter-group">
+                <label for="category">Category:</label>
+                <select id="category">
+                    <option value="all">All</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="clothing">Clothing</option>
+                    <option value="books">Books</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="price">Max Price:</label>
+                <input type="range" id="price" min="0" max="1000" value="1000" step="10">
+                <span id="priceValue">$1000</span>
+            </div>
+        </div>
+        <div id="products" class="products"></div>
+    </div>
+
+    <script>
+        const products = [
+            { name: 'Laptop', category: 'electronics', price: 999 },
+            { name: 'Smartphone', category: 'electronics', price: 699 },
+            { name: 'T-shirt', category: 'clothing', price: 29 },
+            { name: 'Jeans', category: 'clothing', price: 59 },
+            { name: 'Novel', category: 'books', price: 15 },
+            { name: 'Textbook', category: 'books', price: 79 },
+            { name: 'Headphones', category: 'electronics', price: 199 },
+            { name: 'Dress', category: 'clothing', price: 89 },
+            { name: 'Cookbook', category: 'books', price: 25 },
+        ];
+
+        const productsContainer = document.getElementById('products');
+        const categoryFilter = document.getElementById('category');
+        const priceFilter = document.getElementById('price');
+        const priceValue = document.getElementById('priceValue');
+
+        function renderProducts(filteredProducts) {
+            productsContainer.innerHTML = '';
+            filteredProducts.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.classList.add('product');
+                productElement.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>Category: ${product.category}</p>
+                    <p>Price: $${product.price}</p>
+                `;
+                productsContainer.appendChild(productElement);
+            });
+        }
+
+        function filterProducts() {
+            const selectedCategory = categoryFilter.value;
+            const maxPrice = parseInt(priceFilter.value);
+            
+            const filteredProducts = products.filter(product => {
+                return (selectedCategory === 'all' || product.category === selectedCategory) &&
+                       product.price <= maxPrice;
+            });
+
+            renderProducts(filteredProducts);
+        }
+
+        categoryFilter.addEventListener('change', filterProducts);
+        priceFilter.addEventListener('input', () => {
+            priceValue.textContent = `$${priceFilter.value}`;
+            filterProducts();
+        });
+
+        // Initial render
+        renderProducts(products);
+    </script>
+</body>
+</html>
